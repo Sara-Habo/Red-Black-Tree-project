@@ -11,7 +11,7 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 		protected Node<E> parent;
 		protected Node<E> left;
 		protected Node<E> right;
-		protected int color;
+		protected int color;  // 0 for black and 1 for red
 
 
 		public Node(E e, Node<E> above, Node<E> leftChild, Node<E> rightChild,int c ) {
@@ -164,7 +164,7 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 		System.out.print(node.getElement()+","+node.getColor()+"// ");
 		postorder(node.getRight());
 	}
-	public void LeftRotation(Node<E> node){
+	protected void LeftRotation(Node<E> node){
 		Node<E> y=node.getRight();
 		node.setRight(y.getLeft());
 		if(y.getLeft()!=TNULL){
@@ -183,7 +183,7 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 		y.setLeft(node);
 		node.setParent(y);
 	}
-	public void RightRotation(Node<E> node){
+	protected void RightRotation(Node<E> node){
 		Node<E> y=node.getLeft();
 		node.setLeft(y.getRight());
 		if(y.getRight()!=TNULL){
@@ -301,20 +301,168 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
          }
          return found;
      }
+	 public void deleteNode(Position<E> p, E value) {
+			Node<E> node = validate(p);
+			Node<E> z = TNULL;
+			Node<E> x, y;
+			while (node != TNULL){
+				if (node.getElement() == value) {
+					z = node;
+					break;
+				}
+				if (compare(value,node.getElement())==1) {
+					node = node.getRight();
+				} else {
+					node = node.getLeft();
+				}
+			}
+			if (z == TNULL) {
+				System.out.println("Couldn't find this value in the tree");
+				return;
+			} 
+			y = z;
+			int y_Color = y.getColor();
+			if (z.getLeft() == TNULL) {
+				x = z.getRight();
+				retransplant(z, z.getRight());
+
+			} else if (z.getRight() == TNULL) {
+
+				x = z.getLeft();
+
+				retransplant(z, z.getLeft());
+
+			} else {
+
+				y = minimum(z.getRight());
+
+				y_Color = y.getColor();
+
+				x = y.getRight();
+
+				if (y.getParent() == z) {
+
+					x.setParent(y) ;
+
+				} else {
+
+					retransplant(y, y.getRight());
+
+					y.setRight(z.getRight());
+
+					y.getRight().setParent(y);
+
+				}
+				retransplant(z, y);
+				y.setLeft(z.getLeft());
+				y.getLeft().setParent(y);
+				y.setColor(z.getColor());
+			}
+
+			if (y_Color == 0){
+				rebalancing_of_Delete(x);
+			}
+
+		}
+		private void rebalancing_of_Delete(Position<E> X) {
+			Node<E> x = validate(X);
+			Node<E> s;
+			while (x != root && x.getColor() == 0) {
+				if (x == x.getParent().getLeft()) {
+					s = x.getParent().getRight();
+					if (s.getColor() == 1) {
+						// case 3.1
+						s.setColor(0);
+						x.getParent().setColor(1);
+						LeftRotation(x.getParent());
+						s = x.getParent().getRight();
+					}
+					if (s.getLeft().getColor() == 0 && s.getRight().getColor() == 0) {
+						// case 3.2
+						s.setColor(1);
+						x = x.getParent();
+					} else {
+						if (s.getRight().getColor() == 0) {
+							// case 3.3
+							s.getLeft().setColor(0);
+							s.setColor(1);
+							RightRotation(s);
+							s = x.getParent().getRight();
+						} 
+						// case 3.4
+						s.setColor(x.getParent().getColor());
+						x.getParent().setColor(0);
+						s.getRight().setColor(0);
+						LeftRotation(x.getParent());
+						x = root;
+					}
+				} else {
+					s = x.getParent().getLeft();
+					if (s.getColor() == 1) {
+						// case 3.1
+						s.setColor(0);
+						x.getParent().setColor(1);
+						RightRotation(x.getParent());
+						s = x.getParent().getLeft();
+					}
+					if (s.getRight().getColor() == 0 && s.getRight().getColor() == 0) {
+						// case 3.2
+						s.setColor(1);
+						x = x.getParent();
+					} else {
+						if (s.getLeft().getColor() == 0) {
+							// case 3.3
+							s.getRight().setColor(0);
+							s.setColor(1);
+							LeftRotation(s);
+							s = x.getParent().getLeft();
+						} 
+						// case 3.4
+						s.setColor(x.getParent().getColor());
+						x.getParent().setColor(0);
+						s.getLeft().setColor(0);
+						RightRotation(x.getParent());
+						x = root;
+					}
+				} 
+			}
+			x.setColor(0);		
+		}
+		private Node<E> minimum(Position<E> R) {
+			Node<E> rightsubtree = validate(R);
+			while (rightsubtree.getLeft() != TNULL) {
+
+				rightsubtree = rightsubtree.getLeft();
+
+			}
+
+			return rightsubtree;
+
+		}
+
+		private void retransplant(Position<E> Z, Position<E> Y) {
+			Node<E> z = validate(Z);
+			Node<E> y = validate(Y);
+			if (z.getParent() == null) {
+				root = y;
+			} else if (z == z.getParent().getLeft()){
+				z.getParent().setLeft(y);
+			} else {
+				z.getParent().setRight(y);
+			}
+			y.setParent(z.getParent());		
+		}
 	public static void main(String[] args){
 	    	RedBlackTree<Integer> bst = new RedBlackTree<>();
 	        bst.insert(10);
-	    	bst.insert(18);
-	    	bst.insert(7);
-	    	bst.insert(15);
-	    	bst.insert(16);
+	    	bst.insert(5);
 	    	bst.insert(30);
-	    	bst.insert(25);
-	    	bst.insert(40);
-	    	bst.insert(60);
-	    	bst.insert(2);
-	    	bst.insert(1);
-	    	bst.insert(70);
+	    	bst.insert(-5);
+	    	bst.insert(7);
+	    	bst.insert(20);
+	    	bst.insert(38);
+	    	bst.insert(35);
+	    	bst.deleteNode(bst.root(),35);
 	    	System.out.println("Preorder Traversal");
 			bst.preorder(bst.root());	
 			System.out.println();
