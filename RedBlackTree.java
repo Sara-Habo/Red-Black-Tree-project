@@ -5,12 +5,13 @@ import java.util.Iterator;
 import trees.LinkedBinaryTree.Node;
 
 public class RedBlackTree<E> extends AbstractBinaryTree<E> {
+	
 	protected static class Node<E> implements Position<E> {
-		private E element;
-		private Node<E> parent;
-		private Node<E> left;
-		private Node<E> right;
-		private int color;
+		protected E element;
+		protected Node<E> parent;
+		protected Node<E> left;
+		protected Node<E> right;
+		protected int color;
 
 
 		public Node(E e, Node<E> above, Node<E> leftChild, Node<E> rightChild,int c ) {
@@ -21,8 +22,7 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 			color=c;
 		}
 		public Node(){
-			
-		}
+			}
 
 		public E getElement() {
 			return element;
@@ -282,8 +282,27 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 		}
 		root.setColor(0);
 	}
+	 public boolean search(Position<E> p,E val){
+		 Node<E> node = validate(p);
+         boolean found = false;
+         while ((node != TNULL) && !found)
+         {
+             E rval = node.getElement();
+             if (compare(val,rval)<0)
+                 node = node.getLeft();
+             else if (compare(val,rval)>0)
+                 node = node.getRight();
+             else
+             {
+                 found = true;
+                 break;
+             }
+             found = search(node, val);
+         }
+         return found;
+     }
 	public static void main(String[] args){
-	    	RedBlackTree bst = new RedBlackTree();
+	    	RedBlackTree<Integer> bst = new RedBlackTree<>();
 	        bst.insert(10);
 	    	bst.insert(18);
 	    	bst.insert(7);
@@ -303,8 +322,8 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 			System.out.println(((Node<Integer>)bst.root()).getRight().getRight().getElement());
 			System.out.println(((Node<Integer>)bst.root()).getRight().getRight().getColor());
 			System.out.println(bst.size());
-	    	
-	
+			Position<Integer> root=bst.root();
+			System.out.println(bst.search(root,70));
 
 		
 	
