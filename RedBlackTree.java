@@ -210,6 +210,10 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 		Node<E> node=new Node<E>(e,null,TNULL,TNULL,1);
 		Node<E>y=null;
 		Node<E> x=this.root;
+		if(search(root,node.getElement())==true){
+			System.out.println("this element already exists");
+			return;
+		}
 		size++;
 		while(x!=TNULL){
 			y=x;
@@ -320,6 +324,7 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 				System.out.println("Couldn't find this value in the tree");
 				return;
 			} 
+			size--;
 			y = z;
 			int y_Color = y.getColor();
 			if (z.getLeft() == TNULL) {
@@ -454,24 +459,82 @@ public class RedBlackTree<E> extends AbstractBinaryTree<E> {
 		}
 	public static void main(String[] args){
 	    	RedBlackTree<Integer> bst = new RedBlackTree<>();
-	        bst.insert(10);
-	    	bst.insert(5);
-	    	bst.insert(30);
-	    	bst.insert(-5);
+	    	bst.insert(10);
+	    	bst.insert(18);
 	    	bst.insert(7);
-	    	bst.insert(20);
-	    	bst.insert(38);
-	    	bst.insert(35);
-	    	bst.deleteNode(bst.root(),35);
+	    	bst.insert(15);
+	    	bst.insert(16);
+	    	bst.insert(30);
+	    	bst.insert(25);
+	    	bst.insert(40);
+	    	bst.insert(60);
+	    	bst.insert(2);
+	    	bst.insert(1);
+	    	bst.insert(70);
 	    	System.out.println("Preorder Traversal");
-			bst.preorder(bst.root());	
-			System.out.println();
+		    bst.preorder(bst.root());
+		    System.out.println("size:"+bst.size());
+		    
+		    bst.deleteNode(bst.root(),1);
+		    System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.deleteNode(bst.root(),40);
+	        System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.insert(6);
+	        System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.deleteNode(bst.root(),10);
+	        System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.deleteNode(bst.root(),60);
+	        System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.insert(24);
+	        System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.deleteNode(bst.root(),18);
+	        System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.deleteNode(bst.root(),16);
+	        System.out.println("Preorder Traversal");
+	        bst.preorder(bst.root());
+	        System.out.println("size:"+bst.size());
+	        
+	        bst.deleteNode(bst.root(),0);
+	        
+	        bst.insert(7);
+	        
+	        System.out.println("Postorder Traversal");
+	        bst.postorder(bst.root());
+	        System.out.println();
+	        
+	        System.out.println("Inorder Traversal");
+	        bst.inorder(bst.root());
+	        
+	        System.out.println();
+	        System.out.println(bst.search(bst.root(),5));
+	        System.out.println(bst.search(bst.root(),7));
 
-			System.out.println(((Node<Integer>)bst.root()).getRight().getRight().getElement());
-			System.out.println(((Node<Integer>)bst.root()).getRight().getRight().getColor());
-			System.out.println(bst.size());
-			Position<Integer> root=bst.root();
-			System.out.println(bst.search(root,70));
+	        
+	        
+		        
+	    	
+			
 
 		
 	
